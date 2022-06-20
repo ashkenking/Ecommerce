@@ -26,6 +26,7 @@ export default class ShoppingCart extends Component {
                 product={prod}
                 onIncrement={this.handleIncrement}
                 onDecrement={this.handleDecrement}
+                onDelete={this.handleDelete}
               >
                 <button className="btn btn-primary">Buy Now</button>
               </Product>
@@ -36,12 +37,44 @@ export default class ShoppingCart extends Component {
     );
   }
   //render ends here
-  handleIncrement = (product) => {
-    console.log("handleIncrement", product);
-    product.quantity = product.quantity + 1;
-  };
 
-  handleDecrement = (product) => {
-    console.log("handleDecrement", product);
+  //executes when the user clicks on + button.
+  handleIncrement = (product, maxValue) => {
+    //get index of the selected product
+    let allProducts = [...this.state.products];
+    let index = allProducts.indexOf(product);
+
+    if (allProducts[index].quantity < maxValue) {
+      allProducts[index].quantity++;
+
+      //update the state of current component (parent component)
+      this.setState({ products: allProducts });
+    }
+  };
+  //executes when the user clicks on - button.
+  handleDecrement = (product, minValue) => {
+    //console.log("handleDecrement", product);
+
+    //get index of the selected product
+    let allProducts = [...this.state.products];
+    let index = allProducts.indexOf(product);
+    if (allProducts[index].quantity > minValue) {
+      allProducts[index].quantity--;
+
+      //update the state of current component (parent component)
+      this.setState({ products: allProducts });
+    }
+  };
+  //executes when the user clicks on Delete(X) button in the Product component
+  handleDelete = (product) => {
+    let allProducts = [...this.state.products];
+    let index = allProducts.indexOf(product);
+    if (window.confirm("Are you sure to delete?")) {
+      //delete product based on index
+      allProducts.splice(index, 1);
+
+      //update the state of current component(parent component)
+      this.setState({ products: allProducts });
+    }
   };
 }
